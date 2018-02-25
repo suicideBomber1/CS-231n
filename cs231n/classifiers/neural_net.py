@@ -71,6 +71,9 @@ class TwoLayerNet(object):
 
     # Compute the forward pass
     scores = None
+    a1 = np.maximum(0, np.dot(X, W1) + b1)
+    scores = np.dot(a1, W2) + b2
+    
     #############################################################################
     # TODO: Perform the forward pass, computing the class scores for the input. #
     # Store the result in the scores variable, which should be an array of      #
@@ -87,6 +90,19 @@ class TwoLayerNet(object):
 
     # Compute the loss
     loss = None
+
+    softmax_scores = np.exp(scores)
+    probs = softmax_scores / np.sum(softmax_scores, axis=1, keepdims=True)
+    loss_arr = -np.log(probs[range(N), y])
+    data_loss = np.sum(loss_arr)/N
+    print(data_loss)
+    
+    reg_loss = reg*(np.sum(W1**2) + np.sum(W2**2))
+    
+    print(reg_loss)
+    
+    loss = data_loss + reg_loss
+    
     #############################################################################
     # TODO: Finish the forward pass, and compute the loss. This should include  #
     # both the data loss and L2 regularization for W1 and W2. Store the result  #
@@ -100,6 +116,10 @@ class TwoLayerNet(object):
 
     # Backward pass: compute gradients
     grads = {}
+    
+    # First compute the gradients on scores
+    
+    
     #############################################################################
     # TODO: Compute the backward pass, computing the derivatives of the weights #
     # and biases. Store the results in the grads dictionary. For example,       #
