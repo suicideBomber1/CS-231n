@@ -95,12 +95,9 @@ class TwoLayerNet(object):
     probs = softmax_scores / np.sum(softmax_scores, axis=1, keepdims=True)
     loss_arr = -np.log(probs[range(N), y])
     data_loss = np.sum(loss_arr)/N
-    print(data_loss)
     
-    reg_loss = reg*(np.sum(W1**2) + np.sum(W2**2))
-    
-    print(reg_loss)
-    
+    reg_loss = 0.5*reg*(np.sum(W1**2) + np.sum(W2**2))
+        
     loss = data_loss + reg_loss
     
     #############################################################################
@@ -118,6 +115,23 @@ class TwoLayerNet(object):
     grads = {}
     
     # First compute the gradients on scores
+    dscores = probs
+    dscores[range(N), y] -= 1
+    dscores /= N
+    
+    # Compute the gradients w.r.t weight tensors
+    
+    grads['W2'] = np.dot(a1.T, dscores)
+    grads['b2'] = np.sum(dscores, axis=0)
+    
+    dhidden = np.dot(dscores, W2.T)
+    
+    grads['W1'] = np.dot(X.T, dhidden)
+    grads['b1'] = np.sum(dhidden, axis=0)
+    
+    # Compute gradient of regularization loss
+    grads['W2'] += reg*W2
+    grads['W1'] += reg*W1
     
     
     #############################################################################
