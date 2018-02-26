@@ -71,7 +71,7 @@ class TwoLayerNet(object):
 
     # Compute the forward pass
     scores = None
-    a1 = np.maximum(0, np.dot(X, W1) + b1)
+    a1 = np.maximum(0, np.dot(X, W1)+ b1)
     scores = np.dot(a1, W2) + b2
     
     #############################################################################
@@ -96,7 +96,7 @@ class TwoLayerNet(object):
     loss_arr = -np.log(probs[range(N), y])
     data_loss = np.sum(loss_arr)/N
     
-    reg_loss = 0.5*reg*(np.sum(W1**2) + np.sum(W2**2))
+    reg_loss = reg*np.sum(W1*W1) + reg*np.sum(W2*W2)
         
     loss = data_loss + reg_loss
     
@@ -130,8 +130,8 @@ class TwoLayerNet(object):
     grads['b1'] = np.sum(dhidden, axis=0)
     
     # Compute gradient of regularization loss
-    grads['W2'] += reg*W2
-    grads['W1'] += reg*W1
+    grads['W2'] += 2*reg*W2
+    grads['W1'] += 2*reg*W1
     
     
     #############################################################################
@@ -178,6 +178,8 @@ class TwoLayerNet(object):
     for it in xrange(num_iters):
       X_batch = None
       y_batch = None
+        
+      indices = np.random.choice
 
       #########################################################################
       # TODO: Create a random minibatch of training data and labels, storing  #
